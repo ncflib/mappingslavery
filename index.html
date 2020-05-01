@@ -2,10 +2,21 @@
 layout: default
 title: Home
 ---
+<div class="message">
+  👋 This site is currently under development. Check back soon or contact us with questions!
+</div>
 <div>
   <h1>Welcome to the Mapping Slavery in Germany project.</h1>
-  <p>This project seeks to map institutions, families, and places of note in Germany that were associated with the slave trade. It is inspired by the <a href="http://www.mappingslavery.nl">Mapping Slavery in the Netherlands</a> project.
-    <img src="https://i.pinimg.com/originals/09/ae/2b/09ae2bc575f6fac6ffee745936d2f1ed.jpg" style="width: 400px;">
+  <p>This project seeks to map institutions, families, and places of note in Germany that were associated with the slave
+    trade. It is inspired by the <a href="http://www.mappingslavery.nl">Mapping Slavery in the Netherlands</a> project.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend massa in odio fermentum, vel blandit ipsum
+    tincidunt. Donec vulputate, leo in mattis imperdiet, erat libero ultricies neque, et ultrices ipsum ipsum ac odio.
+    Integer sed turpis venenatis, tempor felis id, consectetur urna. Aenean eget dolor dignissim, eleifend odio sed,
+    rhoncus urna. Suspendisse rhoncus ex eu lacinia ultrices. Aliquam et libero ligula. Sed vehicula mauris et mauris
+    posuere vulputate. Mauris eu augue tincidunt, efficitur ligula quis, sollicitudin magna. Pellentesque magna sem,
+    faucibus at posuere quis, tincidunt at lectus.</p>
 </div>
 
 <h1>Posts</h1>
@@ -16,28 +27,28 @@ title: Home
       <a href="{{ post.url | absolute_url }}">
         {{ post.title }}
       </a>
-    </h1>
+      </h1>
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
+      <span class="post-date">{{ post.date | date_to_string }}</span>
 
-    {{ post.content }}
+      {{ post.content }}
   </div>
   {% endfor %}
 </div>
 
 <div class="pagination">
   {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ paginator.next_page_path | absolute_url }}">Older</a>
+  <a class="pagination-item older" href="{{ paginator.next_page_path | absolute_url }}">Older</a>
   {% else %}
-    <span class="pagination-item older">Older</span>
+  <span class="pagination-item older">Older</span>
   {% endif %}
   {% if paginator.previous_page %}
-    {% if paginator.page == 2 %}
-      <a class="pagination-item newer" href="{{ '/' | absolute_url }}">Newer</a>
-    {% else %}
-      <a class="pagination-item newer" href="{{ paginator.previous_page_path | absolute_url }}">Newer</a>
-    {% endif %}
+  {% if paginator.page == 2 %}
+  <a class="pagination-item newer" href="{{ '/' | absolute_url }}">Newer</a>
   {% else %}
-    <span class="pagination-item newer">Newer</span>
+  <a class="pagination-item newer" href="{{ paginator.previous_page_path | absolute_url }}">Newer</a>
+  {% endif %}
+  {% else %}
+  <span class="pagination-item newer">Newer</span>
   {% endif %}
 </div>

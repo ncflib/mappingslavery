@@ -3,4 +3,83 @@ layout: page
 title: Map
 ---
 
+<style>
+	#map { width: 100%;
+		 height: 400px;
+		 display:;
+		}
 
+	.col-md-3 {
+		width: 30%;
+		display: inline-block;
+	}
+
+* {box-sizing: border-box}
+
+/* Container needed to position the overlay. Adjust the width as needed */
+.cont {
+  position: relative;
+  width: 50%;
+  max-width: 300px;
+}
+
+/* Make the image to responsive */
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The overlay effect - lays on top of the container and over the image */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.5); /* Black see-through */
+  color: #f1f1f1;
+  width: 100%;
+  transition: .5s ease;
+  opacity:0;
+  color: white;
+  font-size: 20px;
+  padding: 20px;
+  margin-bottom: 20px;	
+  text-align: center;
+}
+
+/* When you mouse over the container, fade in the overlay title */
+.cont:hover .overlay {
+  opacity: 1;
+}
+
+
+</style>
+
+<p>Pick a city below to begin investigating slavery in German cities.</p>
+
+<div class="cont col-md-3">
+  <img src="https://i.pinimg.com/originals/09/ae/2b/09ae2bc575f6fac6ffee745936d2f1ed.jpg" alt="Avatar" class="image">
+  <div class="overlay">Berlin</div>
+</div>
+
+<div class="cont col-md-3">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRKE7oLPQOrQNB_TKIk9d8AXg4CTC-hzOg49nLuTG7zvlyS8jrQ&usqp=CAU" alt="Avatar" class="image">
+  <div class="overlay">Stuttgart</div>
+</div>
+
+<div id="map"></div>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY211cmd1OTIiLCJhIjoiY2p2bWd6dmFiMWNudDRhbzltZnh6MWpibSJ9.tSYhCcgtpnOXoG-iZSbOvA';
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+center: [13.4, 52.52], // starting position [lng, lat]
+zoom: 9 // starting zoom
+});
+
+var marker = new mapboxgl.Marker()
+.setLngLat([13.4, 52.665957])
+.addTo(map);
+</script>
+ 

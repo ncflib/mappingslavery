@@ -1,22 +1,22 @@
 # Setup
-title:               Mapping Slavery in Germany
-tagline:             'A New Mapping Project'
-description:         'This project is produced by Dr. Wendy Sutherland, Professor of German, and Cal Murgu, Digital Humanities Librarian.'
-url:                 
-baseurl:             ''
-paginate:            5
-permalink:           pretty
+title: Mapping Slavery in Germany
+tagline: "A New Mapping Project"
+description: "This project is produced by Dr. Wendy-Lou Sutherland, Associate Professor of German, Black European and Diaspora Studies, and Cal Murgu, Assistant Librarian in Digital Humanities."
+url:
+baseurl: "cmurgu.github.io"
+paginate: 5
+permalink: pretty
 
 # About/contact
 author:
-  name:              Mark Otto
-  url:               https://twitter.com/mdo
-  email:             markdotto@gmail.com
+  name: Mark Otto
+  url: https://twitter.com/mdo
+  email: markdotto@gmail.com
 
 # Gems
 plugins:
   - jekyll-paginate
 
 # Custom vars
-version:             1.1.0
+version: 1.1.0
 google_analytics_id: #UA-XXXX-Y
