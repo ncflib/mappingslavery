@@ -2,11 +2,17 @@
 layout: default
 title: Home
 ---
+<div>
+  <h1>Welcome to the Mapping Slavery in Germany project.</h1>
+  <p>This project seeks to map institutions, families, and places of note in Germany that were associated with the slave trade. It is inspired by the <a href="http://www.mappingslavery.nl">Mapping Slavery in the Netherlands</a> project.
+    <img src="https://i.pinimg.com/originals/09/ae/2b/09ae2bc575f6fac6ffee745936d2f1ed.jpg" style="width: 400px;">
+</div>
 
+<h1>Posts</h1>
 <div class="posts">
   {% for post in paginator.posts %}
   <div class="post">
-    <h1 class="post-title">
+    <h2 class="post-title">
       <a href="{{ post.url | absolute_url }}">
         {{ post.title }}
       </a>
