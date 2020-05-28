@@ -7,14 +7,14 @@ title: Berlin
   integrity="sha256-fNoRrwkP2GuYPbNSJmMJOCyfRB2DhPQe0rGTgzRsyso=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css"
   integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous" />
-  <script type="text/javascript" src='../../js/tabletop1.3.4.js'></script>
-        <script type="text/javascript" src='../../js/sheetsee.js'></script>
         <link rel="stylesheet" href="../../src/leaflet-search.css" />
         <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.src.min.js"></script>
+        <script src="../../js/leaflet.markercluster.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.3/src/tabletop.min.js"></script>
 <style>
   #map {
     width: 100%;
-    height: 500px;
+    height: 900px;
   }
 
 
@@ -29,72 +29,53 @@ title: Berlin
 
 </style>
 
-<p>Click on points of interests below to begin investigating connections to slavery in Berlin. You can also search for particular locations.</p>
+<p>Click on points of interest below to begin investigating connections to slavery in {{ page.title }}. You can also search for particular locations.</p>
 
 <div id="findbox"></div>
 <div id="map"></div>
+
 <script>
+function init() {
+  Tabletop.init( {
+    key: 'https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=0',
+    simpleSheet: true }
+  ).then(function(data, tabletop) { 
+    var baseMarker = {
+      "Name": data[0].Name,
+      "Loc": [data[0].Lat, data[0].Long],
+      "Desc": data[0].Desc,
+      "Source": data[0].Source,
+      "Img": data[0].Image
+    };
 
-  //sample data values for populate map
-  var data = [
-    {"loc":[41.575330,13.102411], "title":"aquamarine"},
-    {"loc":[41.575730,13.002411], "title":"black"},
-    {"loc":[41.807149,13.162994], "title":"blue"},
-    {"loc":[41.507149,13.172994], "title":"chocolate"},
-    {"loc":[41.847149,14.132994], "title":"coral"},
-    {"loc":[41.219190,13.062145], "title":"cyan"},
-    {"loc":[41.344190,13.242145], "title":"darkblue"},  
-    {"loc":[41.679190,13.122145], "title":"darkred"},
-    {"loc":[41.329190,13.192145], "title":"darkgray"},
-    {"loc":[41.379290,13.122545], "title":"dodgerblue"},
-    {"loc":[41.409190,13.362145], "title":"gray"},
-    {"loc":[41.794008,12.583884], "title":"green"}, 
-    {"loc":[41.805008,12.982884], "title":"greenyellow"},
-    {"loc":[41.536175,13.273590], "title":"red"},
-    {"loc":[41.516175,13.373590], "title":"rosybrown"},
-    {"loc":[41.506175,13.173590], "title":"royalblue"},
-    {"loc":[41.836175,13.673590], "title":"salmon"},
-    {"loc":[41.796175,13.570590], "title":"seagreen"},
-    {"loc":[41.436175,13.573590], "title":"seashell"},
-    {"loc":[41.336175,13.973590], "title":"silver"},
-    {"loc":[41.236175,13.273590], "title":"skyblue"},
-    {"loc":[41.546175,13.473590], "title":"yellow"},
-    {"loc":[41.239190,13.032145], "title":"white"}
-  ];
+    var start = [data[1].Lat, data[1].Long]
+    console.log(start);
 
-  var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });  //set center from first location
+  var mymap = L.map('map').setView(start, 10);
 
-  map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')); //base layer
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+  maxZoom: 20,
+  attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+}).addTo(mymap);
 
-  var markersLayer = new L.LayerGroup();  //layer contain searched elements
-  map.addLayer(markersLayer);
+    var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
 
-  map.addControl( new L.Control.Search({
-    container: 'findbox',
+    var title = baseMarker.Name,  //value searched
+     loc = baseMarker.Loc, //position found
+     desc = baseMarker.Desc,    //descr found
+     source = baseMarker.Source,
+     img = baseMarker.Img
+
+     marker = new L.Marker(new L.latLng(loc), {title: title} ).bindPopup('Name: ' + title + '<br>' + 'Desc: ' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<br>' + 'Source: ' + source).addTo(markersLayer);//se property searched
+
+    var controlSearch = new L.Control.Search({
+    position:'topright',    
     layer: markersLayer,
     initial: false,
-    collapsed: false
-  }) );
-  //inizialize search control
-
-  ////////////populate map with markers from sample data
-  for(i in data) {
-    var title = data[i].title,  //value searched
-      loc = data[i].loc,    //position found
-      marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
-    marker.bindPopup('title: '+ title );
-    markersLayer.addLayer(marker);
-  }
-
-</script>
-
-<!-- <script>
-  var mymap = L.map('map').setView([54.20008, 8.9], 10);
-
-  L.tileLayer(
-    'https://api.mapbox.com/styles/v1/cmurgu92/ck9olbjai3gaw1iqfhe9ehhnq/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiY211cmd1OTIiLCJhIjoiY2p2bWd6dmFiMWNudDRhbzltZnh6MWpibSJ9.tSYhCcgtpnOXoG-iZSbOvA', {
-    tileSize: 500,
-    zoomOffset: -1,
-    attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    zoom: 12,
+    marker: false
   }).addTo(mymap);
-</script> -->
+})};
+
+window.addEventListener('DOMContentLoaded', init)
+</script> 

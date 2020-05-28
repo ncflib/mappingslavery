@@ -1,7 +1,7 @@
 # Setup
 title: Mapping Slavery in Germany
 tagline: "A New Mapping Project"
-description: "This project is produced by Dr. Wendy-Lou Sutherland, Associate Professor of German, Black European and Diaspora Studies, and Cal Murgu, Assistant Librarian in Digital Humanities."
+description: "This project is produced by Dr. Wendy-Lou Sutherland, Associate Professor of German, Black European and Diaspora Studies, and Cal Murgu, Digital Humanities Librarian."
 url:
 baseurl: ""
 paginate: 5
@@ -9,9 +9,9 @@ permalink: pretty
 
 # About/contact
 author:
-  name: Mark Otto
-  url: https://twitter.com/mdo
-  email: markdotto@gmail.com
+  name: Cal Murgu
+  url: https://twitter.com/calmurgu
+  email: cmurgu@ncf.edu
 
 # Gems
 plugins:
