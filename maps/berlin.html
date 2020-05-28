@@ -1,80 +1,94 @@
 ---
 layout: page
-title: Map
+title: Berlin
 ---
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js"
   integrity="sha256-fNoRrwkP2GuYPbNSJmMJOCyfRB2DhPQe0rGTgzRsyso=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css"
   integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous" />
+  <script type="text/javascript" src='../../js/tabletop1.3.4.js'></script>
+        <script type="text/javascript" src='../../js/sheetsee.js'></script>
+        <link rel="stylesheet" href="../../src/leaflet-search.css" />
+        <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.src.min.js"></script>
 <style>
   #map {
     width: 100%;
     height: 500px;
-    display: none;
-  }
-
-  .col-md-3 {
-    width: 30%;
-    display: inline-block;
   }
 
 
-  /* Container needed to position the overlay. Adjust the width as needed */
-  .cont {
-    position: relative;
-    width: 50%;
-    max-width: 300px;
-  }
+.search-tooltip {
+  width: 200px;
+}
+.leaflet-control-search .search-cancel {
+  position: static;
+  float: left;
+  margin-left: -22px;
+}
 
-  /* Make the image to responsive */
-  .image {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /* The overlay effect - lays on top of the container and over the image */
-  .overlay {
-    position: absolute;
-    bottom: 0;
-    background: rgb(0, 0, 0);
-    background: rgba(0, 0, 0, 0.5);
-    /* Black see-through */
-    color: #f1f1f1;
-    width: 100%;
-    transition: .5s ease;
-    opacity: 0;
-    color: white;
-    font-size: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  /* When you mouse over the container, fade in the overlay title */
-  .cont:hover .overlay {
-    opacity: 1;
-  }
 </style>
 
-<p>Click on a city below to begin investigating connections to slavery.</p>
+<p>Click on points of interests below to begin investigating connections to slavery in Berlin. You can also search for particular locations.</p>
 
-<div class="cont col-md-3">
-  <img src="https://i.pinimg.com/originals/09/ae/2b/09ae2bc575f6fac6ffee745936d2f1ed.jpg" alt="Avatar" class="image">
-  <div id="berlin" class="overlay">Berlin</div>
-</div>
-
-<div class="cont col-md-3">
-  <img
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRKE7oLPQOrQNB_TKIk9d8AXg4CTC-hzOg49nLuTG7zvlyS8jrQ&usqp=CAU"
-    alt="Avatar" class="image">
-  <div class="overlay">Stuttgart</div>
-</div>
-
+<div id="findbox"></div>
 <div id="map"></div>
-
 <script>
+
+  //sample data values for populate map
+  var data = [
+    {"loc":[41.575330,13.102411], "title":"aquamarine"},
+    {"loc":[41.575730,13.002411], "title":"black"},
+    {"loc":[41.807149,13.162994], "title":"blue"},
+    {"loc":[41.507149,13.172994], "title":"chocolate"},
+    {"loc":[41.847149,14.132994], "title":"coral"},
+    {"loc":[41.219190,13.062145], "title":"cyan"},
+    {"loc":[41.344190,13.242145], "title":"darkblue"},  
+    {"loc":[41.679190,13.122145], "title":"darkred"},
+    {"loc":[41.329190,13.192145], "title":"darkgray"},
+    {"loc":[41.379290,13.122545], "title":"dodgerblue"},
+    {"loc":[41.409190,13.362145], "title":"gray"},
+    {"loc":[41.794008,12.583884], "title":"green"}, 
+    {"loc":[41.805008,12.982884], "title":"greenyellow"},
+    {"loc":[41.536175,13.273590], "title":"red"},
+    {"loc":[41.516175,13.373590], "title":"rosybrown"},
+    {"loc":[41.506175,13.173590], "title":"royalblue"},
+    {"loc":[41.836175,13.673590], "title":"salmon"},
+    {"loc":[41.796175,13.570590], "title":"seagreen"},
+    {"loc":[41.436175,13.573590], "title":"seashell"},
+    {"loc":[41.336175,13.973590], "title":"silver"},
+    {"loc":[41.236175,13.273590], "title":"skyblue"},
+    {"loc":[41.546175,13.473590], "title":"yellow"},
+    {"loc":[41.239190,13.032145], "title":"white"}
+  ];
+
+  var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });  //set center from first location
+
+  map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')); //base layer
+
+  var markersLayer = new L.LayerGroup();  //layer contain searched elements
+  map.addLayer(markersLayer);
+
+  map.addControl( new L.Control.Search({
+    container: 'findbox',
+    layer: markersLayer,
+    initial: false,
+    collapsed: false
+  }) );
+  //inizialize search control
+
+  ////////////populate map with markers from sample data
+  for(i in data) {
+    var title = data[i].title,  //value searched
+      loc = data[i].loc,    //position found
+      marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+    marker.bindPopup('title: '+ title );
+    markersLayer.addLayer(marker);
+  }
+
+</script>
+
+<!-- <script>
   var mymap = L.map('map').setView([54.20008, 8.9], 10);
 
   L.tileLayer(
@@ -83,6 +97,4 @@ title: Map
     zoomOffset: -1,
     attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(mymap);
-</script>
-<script>
-</script>
+</script> -->
