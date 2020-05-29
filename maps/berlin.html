@@ -7,10 +7,10 @@ title: Berlin
   integrity="sha256-fNoRrwkP2GuYPbNSJmMJOCyfRB2DhPQe0rGTgzRsyso=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css"
   integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous" />
-        <link rel="stylesheet" href="../../src/leaflet-search.css" />
-        <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.src.min.js"></script>
-        <script src="../../js/leaflet.markercluster.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.3/src/tabletop.min.js"></script>
+<link rel="stylesheet" href="../../src/leaflet-search.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.src.min.js"></script>
+<script src="../../js/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabletop@1.6.3/src/tabletop.min.js"></script>
 <style>
   #map {
     width: 100%;
@@ -18,77 +18,94 @@ title: Berlin
   }
 
 
-.search-tooltip {
-  width: 200px;
-}
-.leaflet-control-search .search-cancel {
-  position: static;
-  float: left;
-  margin-left: -22px;
-}
+  .search-tooltip {
+    width: 200px;
+  }
 
+  .leaflet-control-search .search-cancel {
+    position: static;
+    float: left;
+    margin-left: -22px;
+  }
 </style>
 <div class="message">
-<p>Click on points of interest below to begin investigating connections to slavery in {{ page.title }}. You can also search for particular locations.</p>
+  <p>Click on points of interest below to begin investigating connections to slavery in {{ page.title }}. You can also
+    search for particular locations.</p>
 </div>
 <div id="findbox"></div>
 <div id="map"></div>
 
 <script>
 
-var baseMarkers = [];
+  // array for markers 
 
-function init() {
-  Tabletop.init( {
-    key: 'https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=0',
-    simpleSheet: true }
-  ).then(function(data, tabletop) { 
-    var baseMarker = {
-      "Name": data[0].Name,
-      "Loc": [data[0].Lat, data[0].Long],
-      "Desc": data[0].Desc,
-      "Source": data[0].Source,
-      "Img": data[0].Image
-    };
+  var baseMarkers = [];
 
-    var i = data.length; 
+  // initiate tabletop 
 
-    data.forEach(function (data) {
-      baseMarkers.push(data)
-    });
-    console.log(baseMarkers);
+  function init() {
+    Tabletop.init({
+      key: 'https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=0', // public sheet
+      simpleSheet: true
+    }
+    ).then(function (data, tabletop) {
+
+      // push data to baseMarkers global
+
+      data.forEach(function (data) {
+        baseMarkers.push(data)
+      });
+
+      console.log("Data successfuly loaded")
+
+      // setView coordinates 
+
+      var start = [data[0].Lat, data[0].Long]
+
+      // instantiate map with setView of start
+
+      var mymap = L.map('map').setView(start, 10);
+      console.log("Map successfuly loaded")
+
+      // tiles 
+
+      L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+      }).addTo(mymap);
+
+      // marker layer 
+
+      var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
+
+      // loop through for markers 
+
+      for (i in baseMarkers) {
+        var title = baseMarkers[i].Name,  //value searched
+          loc = [baseMarkers[i].Lat, baseMarkers[i].Long], //position found
+          desc = baseMarkers[i].Desc,    //descr found
+          source = baseMarkers[i].Source,
+          img = baseMarkers[i].Image
+
+        marker = new L.Marker(new L.latLng(loc), { title: title }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer);//se property searched
+      }
+
+      console.log("Markers successfuly loaded")
 
 
+      // search 
 
-    var start = [data[0].Lat, data[0].Long]
-    console.log(start);
+      var controlSearch = new L.Control.Search({
+        position: 'topright',
+        layer: markersLayer,
+        initial: false,
+        zoom: 12,
+        marker: false
+      }).addTo(mymap);
+      console.log("Done")
+    })
+  };
 
-  var mymap = L.map('map').setView(start, 10);
+  window.addEventListener('DOMContentLoaded', init)
 
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-  maxZoom: 20,
-  attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-}).addTo(mymap);
-
-    var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
-
-    for(i in baseMarkers) {
-    var title = baseMarkers[i].Name,  //value searched
-     loc = [baseMarkers[i].Lat, baseMarkers[i].Long], //position found
-     desc = baseMarkers[i].Desc,    //descr found
-     source = baseMarkers[i].Source,
-     img = baseMarkers[i].Image
-
-     marker = new L.Marker(new L.latLng(loc), {title: title} ).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer);//se property searched
-}
-    var controlSearch = new L.Control.Search({
-    position:'topright',    
-    layer: markersLayer,
-    initial: false,
-    zoom: 12,
-    marker: false
-  }).addTo(mymap);
-})};
-
-window.addEventListener('DOMContentLoaded', init)
-</script> 
+</script>
