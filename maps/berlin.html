@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: map
 title: Berlin
 ---
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -28,13 +28,16 @@ title: Berlin
 }
 
 </style>
-
+<div class="message">
 <p>Click on points of interest below to begin investigating connections to slavery in {{ page.title }}. You can also search for particular locations.</p>
-
+</div>
 <div id="findbox"></div>
 <div id="map"></div>
 
 <script>
+
+var baseMarkers = [];
+
 function init() {
   Tabletop.init( {
     key: 'https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=0',
@@ -48,7 +51,16 @@ function init() {
       "Img": data[0].Image
     };
 
-    var start = [data[1].Lat, data[1].Long]
+    var i = data.length; 
+
+    data.forEach(function (data) {
+      baseMarkers.push(data)
+    });
+    console.log(baseMarkers);
+
+
+
+    var start = [data[0].Lat, data[0].Long]
     console.log(start);
 
   var mymap = L.map('map').setView(start, 10);
@@ -60,14 +72,15 @@ function init() {
 
     var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
 
-    var title = baseMarker.Name,  //value searched
-     loc = baseMarker.Loc, //position found
-     desc = baseMarker.Desc,    //descr found
-     source = baseMarker.Source,
-     img = baseMarker.Img
+    for(i in baseMarkers) {
+    var title = baseMarkers[i].Name,  //value searched
+     loc = [baseMarkers[i].Lat, baseMarkers[i].Long], //position found
+     desc = baseMarkers[i].Desc,    //descr found
+     source = baseMarkers[i].Source,
+     img = baseMarkers[i].Image
 
-     marker = new L.Marker(new L.latLng(loc), {title: title} ).bindPopup('Name: ' + title + '<br>' + 'Desc: ' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<br>' + 'Source: ' + source).addTo(markersLayer);//se property searched
-
+     marker = new L.Marker(new L.latLng(loc), {title: title} ).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer);//se property searched
+}
     var controlSearch = new L.Control.Search({
     position:'topright',    
     layer: markersLayer,
