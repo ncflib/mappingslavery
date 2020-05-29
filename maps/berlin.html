@@ -36,6 +36,7 @@ title: Berlin
 </div>
 <div id="findbox"></div>
 <div id="map"></div>
+<div class="message" id="infoDiv"></div>
 
 <script>
 
@@ -80,19 +81,24 @@ title: Berlin
 
       var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
 
+      console.log(markersLayer);
       // loop through for markers 
 
+
       for (i in baseMarkers) {
-        var title = baseMarkers[i].Name,  //value searched
-          loc = [baseMarkers[i].Lat, baseMarkers[i].Long], //position found
-          desc = baseMarkers[i].Desc,    //descr found
-          source = baseMarkers[i].Source,
-          img = baseMarkers[i].Image
+        var title = baseMarkers[i].Name  //value searched
+        var loc = [baseMarkers[i].Lat, baseMarkers[i].Long] //position found
+        var desc = baseMarkers[i].Desc    //descr found
+        var source = baseMarkers[i].Source
+        var img = baseMarkers[i].Image
 
-        marker = new L.Marker(new L.latLng(loc), { title: title }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer);//se property searched
-      }
-
+        var marker = new L.Marker(L.latLng([baseMarkers[i].Lat, baseMarkers[i].Long]), { title: title, description: desc, source: source, img: img }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer).on('click', function (e) {
+          document.getElementById('infoDiv').innerHTML = e.target.options.title + '<br>' + e.target.options.description + '<br>' + '<img style="padding-top: 10px;" src="' + e.target.options.img + '">' + '<br>' + source;
+        });
+      };
       console.log("Markers successfuly loaded")
+
+      // add listener to markerlayer
 
 
       // search 
