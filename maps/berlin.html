@@ -36,7 +36,9 @@ title: Berlin
 </div>
 <div id="findbox"></div>
 <div id="map"></div>
-<div class="message" id="infoDiv"></div>
+<h1 class="message">Info</h1>
+<div class="message" id="infoDiv">
+</div>
 
 <script>
 
@@ -106,8 +108,8 @@ title: Berlin
       var controlSearch = new L.Control.Search({
         position: 'topright',
         layer: markersLayer,
-        initial: false,
-        zoom: 12,
+        initial: true,
+        zoom: 10,
         marker: false
       }).addTo(mymap);
       console.log("Done")
