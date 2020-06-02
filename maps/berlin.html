@@ -28,6 +28,14 @@ title: Berlin
     float: left;
     margin-left: -22px;
   }
+
+  #deets {
+    display: none;
+  }
+
+  .vis {
+    display: inline-flex;
+  }
 </style>
 <div class="message">
   <p>Click on points of interest below to begin investigating connections to slavery in {{ page.title }}. You can also
@@ -36,8 +44,8 @@ title: Berlin
 </div>
 <div id="findbox"></div>
 <div id="map"></div>
-<h1 class="message">Info</h1>
-<div class="message" id="infoDiv">
+<h1 id="deets">Details</h1>
+<div id="infoDiv">
 </div>
 
 <script>
@@ -85,7 +93,7 @@ title: Berlin
 
       L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
         maxZoom: 20,
-        attribution: 'Click <a href="#">here</a> for data. &copy; Wendy Sutherland, &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        attribution: 'Click <a href="https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=630203546">here</a> for data. &copy; Wendy Sutherland, &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
       }).addTo(mymap);
 
       // marker and poly layer 
@@ -116,6 +124,8 @@ title: Berlin
 
         var polygon = new L.polygon([latlong1, latlong2, latlong3, latlong4], { title: title, description: desc, source: source, img: img }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(polyLayer).on('click', function (e) {
           document.getElementById('infoDiv').innerHTML = e.target.options.title + '<br>' + e.target.options.description + '<br>' + '<img style="padding-top: 10px;" src="' + e.target.options.img + '">' + '<br>' + source;
+          document.getElementById("infoDiv").className = "message";
+          document.getElementById("deets").style.display = "inline-flex";
         });
       };
 
@@ -130,8 +140,11 @@ title: Berlin
 
         var marker = new L.Marker(L.latLng([baseMarkers[i].Lat, baseMarkers[i].Long]), { title: title, description: desc, source: source, img: img }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(markersLayer).on('click', function (e) {
           document.getElementById('infoDiv').innerHTML = e.target.options.title + '<br>' + e.target.options.description + '<br>' + '<img style="padding-top: 10px;" src="' + e.target.options.img + '">' + '<br>' + source;
+          document.getElementById("infoDiv").className = "message";
+          document.getElementById("deets").style.display = "inline-flex";
         });
       };
+
       console.log("Markers successfuly loaded")
 
       // add listener to markerlayer
