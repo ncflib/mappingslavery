@@ -45,47 +45,81 @@ title: Berlin
   // array for markers 
 
   var baseMarkers = [];
+  var basePolys = [];
 
   // initiate tabletop 
 
   function init() {
     Tabletop.init({
       key: 'https://docs.google.com/spreadsheets/d/1AGz2VmBzDfMfMBgWsyb5MQxKU91Ideda68OpG_gH8j4/edit#gid=0', // public sheet
-      simpleSheet: true
+      simpleSheet: false
     }
     ).then(function (data, tabletop) {
+      // set data 
+
+      var data1 = data['marker'].elements;
+      var data2 = data['poly'].elements;
 
       // push data to baseMarkers global
 
-      data.forEach(function (data) {
-        baseMarkers.push(data)
+      data1.forEach(function (data1) {
+        baseMarkers.push(data1)
+      });
+
+      data2.forEach(function (data2) {
+        basePolys.push(data2)
       });
 
       console.log("Data successfuly loaded")
 
       // setView coordinates 
 
-      var start = [data[0].Lat, data[0].Long]
+      var start = [data1[0].Lat, data1[0].Long]
 
       // instantiate map with setView of start
 
       var mymap = L.map('map').setView(start, 10);
-      console.log("Map successfuly loaded")
+      console.log("Map successfuly loaded at setView")
 
-      // tiles 
+      // tiles using Stadia map
 
       L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
         maxZoom: 20,
         attribution: 'Click <a href="#">here</a> for data. &copy; Wendy Sutherland, &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
       }).addTo(mymap);
 
-      // marker layer 
+      // marker and poly layer 
 
       var markersLayer = new L.LayerGroup().addTo(mymap);  //layer contain searched elements
+      var polyLayer = new L.LayerGroup().addTo(mymap); // layer containing polygons
 
-      console.log(markersLayer);
-      // loop through for markers 
 
+      // loop through for polygons
+
+      for (i in basePolys) {
+        var title = basePolys[i].Name // title value
+        var point1 = basePolys[i].pt1;
+        var point2 = basePolys[i].pt2;
+        var point3 = basePolys[i].pt3;
+        var point4 = basePolys[i].pt4;
+        var latlong1 = point1.split(", ");
+        var latlong2 = point2.split(", ");
+        var latlong3 = point3.split(", ");
+        var latlong4 = point4.split(", ");
+        var desc = basePolys[i].Desc    //descr found
+        var source = basePolys[i].Source
+        var img = basePolys[i].Image
+
+        console.log(point1);
+        console.log(latlong1);
+
+
+        var polygon = new L.polygon([latlong1, latlong2, latlong3, latlong4], { title: title, description: desc, source: source, img: img }).bindPopup('<strong>Name: </strong>' + title + '<br>' + '<strong>Desc: </strong>' + desc + '<br>' + '<img style="padding-top: 10px;" src="' + img + '">' + '<strong>Source: </strong>' + source).addTo(polyLayer).on('click', function (e) {
+          document.getElementById('infoDiv').innerHTML = e.target.options.title + '<br>' + e.target.options.description + '<br>' + '<img style="padding-top: 10px;" src="' + e.target.options.img + '">' + '<br>' + source;
+        });
+      };
+
+      // loop for markers
 
       for (i in baseMarkers) {
         var title = baseMarkers[i].Name  //value searched
@@ -107,10 +141,11 @@ title: Berlin
 
       var controlSearch = new L.Control.Search({
         position: 'topright',
-        layer: markersLayer,
+        layer: L.featureGroup([markersLayer, polyLayer]),
         initial: true,
-        zoom: 10,
-        marker: false
+        zoom: 15,
+        marker: false,
+        animate: true
       }).addTo(mymap);
       console.log("Done")
     })
